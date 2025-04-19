@@ -7,6 +7,7 @@
     <style>
       :root {
         --primary-color: #007aff;
+        --success-color: #34c759;
         --background-color: #f5f5f7;
         --card-background: #ffffff;
         --text-color: #1d1d1f;
@@ -25,12 +26,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
       }
 
       .container {
         width: 100%;
         max-width: 500px;
         padding: 2rem;
+        position: relative;
       }
 
       .card {
@@ -81,26 +84,79 @@
         transform: translateY(-1px);
       }
 
+      button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
       .result {
         font-size: 64px;
         font-weight: 700;
         text-align: center;
         margin: 2rem 0;
-        color: var(--primary-color);
         min-height: 80px;
+        transition: color 0.5s ease;
+        position: relative;
       }
 
-      h1 {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        text-align: center;
+      .result.animate {
+        animation: numberChange 0.1s linear;
+        color: var(--primary-color);
       }
 
-      .description {
-        color: var(--secondary-text);
-        text-align: center;
-        margin-bottom: 2rem;
+      .result.success {
+        color: var(--success-color);
+        animation: successPop 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      }
+
+      @keyframes successPop {
+        0% {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes numberChange {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .particle {
+        position: absolute;
+        pointer-events: none;
+        animation: particle 1s ease-out forwards;
+        opacity: 0;
+      }
+
+      @keyframes particle {
+        0% {
+          transform: translate(0, 0) scale(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--tx), var(--ty)) scale(1);
+          opacity: 0;
+        }
+      }
+
+      .success-animation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
       }
     </style>
   </head>
@@ -112,7 +168,7 @@
           Generate a random number between any two values you choose.
         </p>
 
-        <form method="post">
+        <form id="randomForm" method="post">
           {% csrf_token %}
           <div class="input-group">
             <input
@@ -130,13 +186,119 @@
               required
             />
           </div>
-          <button type="submit">Generate Random Number</button>
+          <button type="submit" id="generateBtn">Generate Random Number</button>
         </form>
 
-        {% if result is not None %}
-        <div class="result">{{ result }}</div>
-        {% endif %}
+        <div id="resultContainer" class="result">
+          {% if result is not None %}{{ result }}{% endif %}
+        </div>
       </div>
+      <div class="success-animation"></div>
     </div>
+
+    <script>
+      document
+        .getElementById("randomForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const form = this;
+          const resultContainer = document.getElementById("resultContainer");
+          const generateBtn = document.getElementById("generateBtn");
+          const min = parseInt(form.min_number.value);
+          const max = parseInt(form.max_number.value);
+
+          // Disable button during animation
+          generateBtn.disabled = true;
+
+          // Start animation
+          resultContainer.classList.remove("success");
+          let animationCount = 0;
+
+          const animateNumbers = () => {
+            resultContainer.textContent =
+              Math.floor(Math.random() * (max - min + 1)) + min;
+            resultContainer.classList.add("animate");
+
+            setTimeout(() => {
+              resultContainer.classList.remove("animate");
+              animationCount++;
+
+              if (animationCount < 10) {
+                // Show 10 different numbers
+                setTimeout(animateNumbers, 100);
+              } else {
+                // Get final result from server
+                const formData = new FormData(form);
+                fetch(window.location.href, {
+                  method: "POST",
+                  body: formData,
+                  headers: {
+                    "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+                  },
+                })
+                  .then((response) => response.text())
+                  .then((html) => {
+                    // Extract result from response
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, "text/html");
+                    const result = doc
+                      .querySelector("#resultContainer")
+                      .textContent.trim();
+
+                    // Show final result with success animation
+                    resultContainer.textContent = result;
+                    resultContainer.classList.add("success");
+                    createCelebrationEffect();
+
+                    // Reset form and button
+                    generateBtn.disabled = false;
+                    form.reset();
+                    form.min_number.value = "1";
+                    form.max_number.value = "100";
+                  });
+              }
+            }, 100);
+          };
+
+          animateNumbers();
+        });
+
+      function createCelebrationEffect() {
+        const container = document.querySelector(".success-animation");
+        const colors = ["#FFD700", "#34C759", "#007AFF", "#FF9500", "#AF52DE"];
+
+        // Clear previous particles
+        container.innerHTML = "";
+
+        // Create multiple particles
+        for (let i = 0; i < 30; i++) {
+          setTimeout(() => {
+            const particle = document.createElement("div");
+            particle.className = "particle";
+            particle.style.setProperty(
+              "--tx",
+              `${(Math.random() - 0.5) * 200}px`
+            );
+            particle.style.setProperty(
+              "--ty",
+              `${(Math.random() - 0.5) * 200}px`
+            );
+            particle.style.left = "50%";
+            particle.style.top = "50%";
+            particle.style.width = "8px";
+            particle.style.height = "8px";
+            particle.style.borderRadius = "50%";
+            particle.style.backgroundColor =
+              colors[Math.floor(Math.random() * colors.length)];
+
+            container.appendChild(particle);
+
+            // Remove particle after animation
+            setTimeout(() => particle.remove(), 1000);
+          }, i * 50);
+        }
+      }
+    </script>
   </body>
 </html>
