@@ -135,8 +135,9 @@
       .particle {
         position: absolute;
         pointer-events: none;
-        animation: particle 1s ease-out forwards;
+        animation: particle 1.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
         opacity: 0;
+        transform-origin: center;
       }
 
       @keyframes particle {
@@ -144,9 +145,34 @@
           transform: translate(0, 0) scale(0);
           opacity: 1;
         }
+        40% {
+          opacity: 1;
+        }
         100% {
-          transform: translate(var(--tx), var(--ty)) scale(1);
+          transform: translate(var(--tx), var(--ty)) scale(var(--scale));
           opacity: 0;
+        }
+      }
+
+      .particle-trail {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at center,
+          currentColor 0%,
+          transparent 70%
+        );
+        filter: blur(4px);
+      }
+
+      @keyframes glow {
+        0%,
+        100% {
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.5);
         }
       }
 
@@ -157,6 +183,7 @@
         right: 0;
         bottom: 0;
         pointer-events: none;
+        overflow: hidden;
       }
     </style>
   </head>
@@ -164,9 +191,6 @@
     <div class="container">
       <div class="card">
         <h1>Random Number Generator</h1>
-        <p class="description">
-          Generate a random number between any two values you choose.
-        </p>
 
         <form id="randomForm" method="post">
           {% csrf_token %}
@@ -266,37 +290,71 @@
 
       function createCelebrationEffect() {
         const container = document.querySelector(".success-animation");
-        const colors = ["#FFD700", "#34C759", "#007AFF", "#FF9500", "#AF52DE"];
-
-        // Clear previous particles
         container.innerHTML = "";
 
-        // Create multiple particles
-        for (let i = 0; i < 30; i++) {
+        const colors = [
+          "#FFD700", // Gold
+          "#FF1493", // Deep Pink
+          "#00FF00", // Lime
+          "#FF4500", // Orange Red
+          "#1E90FF", // Dodger Blue
+          "#FF00FF", // Magenta
+          "#00FFFF", // Cyan
+          "#FF69B4", // Hot Pink
+          "#7FFF00", // Chartreuse
+          "#FF8C00", // Dark Orange
+        ];
+
+        // Create multiple bursts
+        for (let burst = 0; burst < 3; burst++) {
           setTimeout(() => {
-            const particle = document.createElement("div");
-            particle.className = "particle";
-            particle.style.setProperty(
-              "--tx",
-              `${(Math.random() - 0.5) * 200}px`
-            );
-            particle.style.setProperty(
-              "--ty",
-              `${(Math.random() - 0.5) * 200}px`
-            );
-            particle.style.left = "50%";
-            particle.style.top = "50%";
-            particle.style.width = "8px";
-            particle.style.height = "8px";
-            particle.style.borderRadius = "50%";
-            particle.style.backgroundColor =
-              colors[Math.floor(Math.random() * colors.length)];
+            // Create particles for each burst
+            for (let i = 0; i < 40; i++) {
+              setTimeout(() => {
+                const particle = document.createElement("div");
+                particle.className = "particle";
 
-            container.appendChild(particle);
+                // Random size between 8 and 16 pixels
+                const size = Math.random() * 8 + 8;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
 
-            // Remove particle after animation
-            setTimeout(() => particle.remove(), 1000);
-          }, i * 50);
+                // Random distance and angle
+                const angle = Math.random() * 360 * (Math.PI / 180);
+                const distance = 100 + Math.random() * 150;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                particle.style.setProperty("--tx", `${tx}px`);
+                particle.style.setProperty("--ty", `${ty}px`);
+                particle.style.setProperty(
+                  "--scale",
+                  Math.random() * 0.5 + 0.5
+                );
+
+                // Random color and glow effect
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.backgroundColor = color;
+                particle.style.boxShadow = `0 0 ${size}px ${color}`;
+                particle.style.animation = `particle 1.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards, glow 0.5s ease-in-out infinite`;
+
+                // Add trail effect
+                const trail = document.createElement("div");
+                trail.className = "particle-trail";
+                trail.style.color = color;
+                particle.appendChild(trail);
+
+                // Position at center
+                particle.style.left = "50%";
+                particle.style.top = "50%";
+
+                container.appendChild(particle);
+
+                // Remove particle after animation
+                setTimeout(() => particle.remove(), 1500);
+              }, i * 20);
+            }
+          }, burst * 300); // Delay between bursts
         }
       }
     </script>
