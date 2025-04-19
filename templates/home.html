@@ -185,6 +185,16 @@
         pointer-events: none;
         overflow: hidden;
       }
+
+      .error-message {
+        color: #dc3545;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        padding: 10px;
+        margin: 10px 0;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
@@ -198,18 +208,23 @@
             <input
               type="number"
               name="min_number"
+              id="min_number"
               placeholder="Min number"
-              value="{{ min_num|default:1 }}"
+              value="{{ min_num }}"
               required
             />
             <input
               type="number"
               name="max_number"
+              id="max_number"
               placeholder="Max number"
-              value="{{ max_num|default:100 }}"
+              value="{{ max_num }}"
               required
             />
           </div>
+          {% if error_message %}
+          <div class="error-message">{{ error_message }}</div>
+          {% endif %}
           <button type="submit" id="generateBtn">Generate Random Number</button>
         </form>
 
@@ -226,11 +241,34 @@
         .addEventListener("submit", async function (e) {
           e.preventDefault();
 
+          const minInput = document.getElementById("min_number");
+          const maxInput = document.getElementById("max_number");
+          const min = parseInt(minInput.value);
+          const max = parseInt(maxInput.value);
+
+          // Валидация на фронтенде
+          if (min > max) {
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "error-message";
+            errorDiv.textContent =
+              "Минимальное число не может быть больше максимального";
+
+            // Удаляем предыдущее сообщение об ошибке, если оно есть
+            const oldError = document.querySelector(".error-message");
+            if (oldError) {
+              oldError.remove();
+            }
+
+            // Вставляем сообщение об ошибке после input-group
+            const inputGroup = document.querySelector(".input-group");
+            inputGroup.insertAdjacentElement("afterend", errorDiv);
+
+            return;
+          }
+
           const form = this;
           const resultContainer = document.getElementById("resultContainer");
           const generateBtn = document.getElementById("generateBtn");
-          const min = parseInt(form.min_number.value);
-          const max = parseInt(form.max_number.value);
 
           // Disable button during animation
           generateBtn.disabled = true;
@@ -275,11 +313,8 @@
                     resultContainer.classList.add("success");
                     createCelebrationEffect();
 
-                    // Reset form and button
+                    // Reset button
                     generateBtn.disabled = false;
-                    form.reset();
-                    form.min_number.value = "1";
-                    form.max_number.value = "100";
                   });
               }
             }, 100);
