@@ -1,5 +1,11 @@
 {% extends 'base.html' %} {% block title %}Home - Randomizer{% endblock title %}
-{% block extra_head %}{% endblock extra_head %} {% block extra_css %}
+{% block extra_head %}
+<!-- Yandex.RTB -->
+<script>
+  window.yaContextCb = window.yaContextCb || [];
+</script>
+<script src="https://yandex.ru/ads/system/context.js" async></script>
+{% endblock extra_head %} {% block extra_css %}
 <style>
   :root {
     --primary-color: #007aff;
@@ -507,32 +513,56 @@
 <!-- Левый рекламный блок -->
 <div class="ad-container ad-left">
   <div class="ad-block">
-    <div class="ad-placeholder">
-      <i class="fas fa-ad ad-placeholder-icon"></i>
-      <div class="ad-placeholder-text">Advertisement Space</div>
-    </div>
+    <!-- Yandex.RTB R-A-2433156-1 -->
+    <div id="yandex_rtb_R-A-2433156-1"></div>
+    <script>
+      window.yaContextCb.push(() => {
+        Ya.Context.AdvManager.render({
+          blockId: "R-A-2433156-1",
+          renderTo: "yandex_rtb_R-A-2433156-1",
+        });
+      });
+    </script>
   </div>
   <div class="ad-block">
-    <div class="ad-placeholder">
-      <i class="fas fa-ad ad-placeholder-icon"></i>
-      <div class="ad-placeholder-text">Advertisement Space</div>
-    </div>
+    <!-- Yandex.RTB R-A-2433156-2 -->
+    <div id="yandex_rtb_R-A-2433156-2"></div>
+    <script>
+      window.yaContextCb.push(() => {
+        Ya.Context.AdvManager.render({
+          blockId: "R-A-2433156-2",
+          renderTo: "yandex_rtb_R-A-2433156-2",
+        });
+      });
+    </script>
   </div>
 </div>
 
 <!-- Правый рекламный блок -->
 <div class="ad-container ad-right">
   <div class="ad-block">
-    <div class="ad-placeholder">
-      <i class="fas fa-ad ad-placeholder-icon"></i>
-      <div class="ad-placeholder-text">Advertisement Space</div>
-    </div>
+    <!-- Yandex.RTB R-A-2433156-3 -->
+    <div id="yandex_rtb_R-A-2433156-3"></div>
+    <script>
+      window.yaContextCb.push(() => {
+        Ya.Context.AdvManager.render({
+          blockId: "R-A-2433156-3",
+          renderTo: "yandex_rtb_R-A-2433156-3",
+        });
+      });
+    </script>
   </div>
   <div class="ad-block">
-    <div class="ad-placeholder">
-      <i class="fas fa-ad ad-placeholder-icon"></i>
-      <div class="ad-placeholder-text">Advertisement Space</div>
-    </div>
+    <!-- Yandex.RTB R-A-2433156-4 -->
+    <div id="yandex_rtb_R-A-2433156-4"></div>
+    <script>
+      window.yaContextCb.push(() => {
+        Ya.Context.AdvManager.render({
+          blockId: "R-A-2433156-4",
+          renderTo: "yandex_rtb_R-A-2433156-4",
+        });
+      });
+    </script>
   </div>
 </div>
 {% endif %}
@@ -578,10 +608,16 @@
 <!-- Мобильный рекламный баннер -->
 <div class="ad-banner-mobile">
   <div class="ad-block">
-    <div class="ad-placeholder">
-      <i class="fas fa-ad ad-placeholder-icon"></i>
-      <div class="ad-placeholder-text">Advertisement Space</div>
-    </div>
+    <!-- Yandex.RTB R-A-2433156-5 -->
+    <div id="yandex_rtb_R-A-2433156-5"></div>
+    <script>
+      window.yaContextCb.push(() => {
+        Ya.Context.AdvManager.render({
+          blockId: "R-A-2433156-5",
+          renderTo: "yandex_rtb_R-A-2433156-5",
+        });
+      });
+    </script>
   </div>
 </div>
 {% endif %} {% endblock content %}
