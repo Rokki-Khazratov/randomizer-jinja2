@@ -1,7 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import user_passes_test
 from .models import Sequence, Number
 import random
+from django.contrib import messages
+import logging
+
+logger = logging.getLogger(__name__)
 
 def is_admin(user):
     return user.is_authenticated and user.is_staff
@@ -122,3 +126,19 @@ def home(request):
         'error_message': error_message,
         'has_sequence': is_admin(request.user) and Sequence.objects.filter(is_active=True).exists()
     })
+
+def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        
+        # Here you would typically send an email or save to database
+        # For now, we'll just show a success message
+        messages.success(request, 'Thank you for your message! We will get back to you soon.')
+        return render(request, 'contact.html')
+    
+    return render(request, 'contact.html')
+
+def about(request):
+    return render(request, 'about.html')

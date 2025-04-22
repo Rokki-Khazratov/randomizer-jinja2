@@ -1,0 +1,194 @@
+{% extends 'base.html' %} {% block extra_css %}
+<style>
+  :root {
+    --primary-color: #007aff;
+    --primary-rgb: 0, 122, 255;
+    --success-color: #34c759;
+    --background-color: #f5f5f7;
+    --card-background: #ffffff;
+    --text-color: #1d1d1f;
+    --secondary-text: #86868b;
+    --border-color: #e5e5ea;
+    --input-background: #ffffff;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about-section {
+    padding: 4rem 0;
+  }
+  .about-card {
+    background: var(--card-background);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  .about-title {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+  .about-text {
+    color: var(--secondary-text);
+    line-height: 1.8;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .feature-card {
+    background: var(--card-background);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  .feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+  .feature-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .feature-text {
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+  }
+
+  .navbar {
+    background-color: var(--card-background);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar-brand {
+    font-weight: 600;
+    color: var(--primary-color) !important;
+  }
+
+  .nav-link {
+    color: var(--text-color) !important;
+    font-weight: 500;
+  }
+
+  .nav-link:hover {
+    color: var(--primary-color) !important;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 2rem 0;
+  }
+
+  .footer {
+    background-color: var(--card-background);
+    padding: 2rem 0;
+    margin-top: auto;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-links a {
+    color: var(--secondary-text);
+    text-decoration: none;
+    margin-left: 1.5rem;
+  }
+
+  .footer-links a:hover {
+    color: var(--primary-color);
+  }
+
+  .social-links a {
+    color: var(--secondary-text);
+    margin-left: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .social-links a:hover {
+    color: var(--primary-color);
+  }
+</style>
+{% endblock extra_css %} {% block content %}
+<div class="container">
+  <div class="about-section">
+    <div class="about-card">
+      <h1 class="about-title">About Randomizer</h1>
+      <p class="about-text">
+        Welcome to Randomizer, your go-to tool for generating random numbers
+        with precision and ease. Our platform is designed to provide a simple,
+        yet powerful solution for all your random number generation needs.
+      </p>
+      <p class="about-text">
+        Whether you're a developer testing applications, a teacher creating
+        exercises, or someone who needs random numbers for any purpose,
+        Randomizer has got you covered. Our advanced algorithms ensure true
+        randomness while maintaining user-friendly simplicity.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-random"></i>
+        </div>
+        <h3 class="feature-title">True Randomness</h3>
+        <p class="feature-text">
+          Generate truly random numbers using advanced algorithms and secure
+          methods.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-sliders-h"></i>
+        </div>
+        <h3 class="feature-title">Customizable Range</h3>
+        <p class="feature-text">
+          Set your own minimum and maximum values to get numbers within your
+          desired range.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h3 class="feature-title">Instant Results</h3>
+        <p class="feature-text">
+          Get your random numbers instantly with our optimized performance.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 class="feature-title">Secure & Reliable</h3>
+        <p class="feature-text">
+          Trust in our secure and reliable random number generation system.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
