@@ -22,58 +22,6 @@
     flex-direction: column;
   }
 
-  .contact-section {
-    padding: 4rem 0;
-  }
-  .contact-card {
-    background: var(--card-background);
-    border-radius: 20px;
-    padding: 2.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
-  .contact-title {
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-  }
-  .contact-form {
-    margin-top: 2rem;
-  }
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-  .form-label {
-    color: var(--secondary-text);
-    margin-bottom: 0.5rem;
-  }
-  .form-control {
-    background: var(--input-background);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    color: var(--text-color);
-  }
-  .form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25);
-  }
-  .contact-info {
-    margin-top: 3rem;
-  }
-  .info-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  .info-icon {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-    margin-right: 1rem;
-  }
-  .info-text {
-    color: var(--secondary-text);
-  }
-
   .navbar {
     background-color: var(--card-background);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -130,66 +78,160 @@
   .social-links a:hover {
     color: var(--primary-color);
   }
+
+  /* Стили для страницы Contact */
+  .contact-section {
+    padding: 4rem 0;
+  }
+
+  .contact-card {
+    background: var(--card-background);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .contact-title {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-text {
+    color: var(--secondary-text);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .contact-form .form-control {
+    background-color: var(--input-background);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .contact-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25);
+  }
+
+  .contact-form textarea.form-control {
+    min-height: 150px;
+    resize: vertical;
+  }
+
+  .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: rgba(var(--primary-rgb), 0.9);
+    border-color: rgba(var(--primary-rgb), 0.9);
+    transform: translateY(-2px);
+  }
+
+  .contact-info {
+    margin-top: 3rem;
+  }
+
+  .info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-icon {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-right: 1rem;
+    width: 40px;
+    text-align: center;
+  }
+
+  .info-text {
+    color: var(--secondary-text);
+  }
+
+  .info-text a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+
+  .info-text a:hover {
+    text-decoration: underline;
+  }
 </style>
 {% endblock extra_css %} {% block content %}
 <div class="container">
   <div class="contact-section">
     <div class="contact-card">
       <h1 class="contact-title">Contact Us</h1>
+      <p class="contact-text">
+        Have questions or suggestions? We'd love to hear from you. Send us a
+        message and we'll respond as soon as possible.
+      </p>
 
-      <form class="contact-form" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-          <label for="name" class="form-label">Name</label>
-          <input
-            type="text"
-            class="form-control"
-            id="name"
-            name="name"
-            required
-          />
+      <form class="contact-form">
+        <div class="row">
+          <div class="col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Your Name"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <input
+              type="email"
+              class="form-control"
+              placeholder="Your Email"
+              required
+            />
+          </div>
         </div>
-        <div class="form-group">
-          <label for="email" class="form-label">Email</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            name="email"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="message" class="form-label">Message</label>
-          <textarea
-            class="form-control"
-            id="message"
-            name="message"
-            rows="5"
-            required
-          ></textarea>
-        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Subject"
+          required
+        />
+        <textarea
+          class="form-control"
+          placeholder="Your Message"
+          required
+        ></textarea>
         <button type="submit" class="btn btn-primary">Send Message</button>
       </form>
 
       <div class="contact-info">
         <div class="info-item">
-          <i class="fas fa-envelope info-icon"></i>
-          <span class="info-text">contact@randomizer.com</span>
+          <div class="info-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="info-text">
+            <a href="mailto:support@randomizer.com">support@randomizer.com</a>
+          </div>
         </div>
         <div class="info-item">
-          <i class="fas fa-phone info-icon"></i>
-          <span class="info-text">+1 (555) 123-4567</span>
+          <div class="info-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div class="info-text">+1 (551) 777-0733</div>
         </div>
         <div class="info-item">
-          <i class="fas fa-map-marker-alt info-icon"></i>
-          <span class="info-text"
-            >123 Random Street, Random City, RC 12345</span
-          >
-        </div>
-        <div class="info-item">
-          <i class="fas fa-clock info-icon"></i>
-          <span class="info-text">Monday - Friday: 9:00 AM - 5:00 PM</span>
+          <div class="info-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="info-text">
+            789 Mission Street, Apt 321 <br/>
+            San Francisco, CA 94103
+          </div>
         </div>
       </div>
     </div>

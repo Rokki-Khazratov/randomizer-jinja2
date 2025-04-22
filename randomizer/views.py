@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import login
 from .models import Sequence, Number
+from .forms import CustomUserCreationForm
 import random
 from django.contrib import messages
 import logging
@@ -142,3 +144,38 @@ def contact(request):
 
 def about(request):
     return render(request, 'about.html')
+
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)  # Don't save yet
+            request.session['registration_data'] = {
+                'username': form.cleaned_data['username'],
+                'email': form.cleaned_data['email'],
+                'password': form.cleaned_data['password1']
+            }
+            return redirect('randomizer:verify')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+def verify(request):
+    if request.method == 'POST':
+        # In a real application, you would verify the code here
+        # For now, we'll just create the user
+        registration_data = request.session.get('registration_data')
+        if registration_data:
+            form = CustomUserCreationForm({
+                'username': registration_data['username'],
+                'email': registration_data['email'],
+                'password1': registration_data['password'],
+                'password2': registration_data['password']
+            })
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                messages.success(request, 'Registration successful!')
+                del request.session['registration_data']
+                return redirect('randomizer:home')
+    return render(request, 'verify.html')

@@ -22,55 +22,6 @@
     flex-direction: column;
   }
 
-  .about-section {
-    padding: 4rem 0;
-  }
-  .about-card {
-    background: var(--card-background);
-    border-radius: 20px;
-    padding: 2.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
-  .about-title {
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-  }
-  .about-text {
-    color: var(--secondary-text);
-    line-height: 1.8;
-  }
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-  .feature-card {
-    background: var(--card-background);
-    border-radius: 15px;
-    padding: 1.5rem;
-    text-align: center;
-    transition: transform 0.3s ease;
-  }
-  .feature-card:hover {
-    transform: translateY(-5px);
-  }
-  .feature-icon {
-    font-size: 2.5rem;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-  }
-  .feature-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-  .feature-text {
-    color: var(--secondary-text);
-    font-size: 0.9rem;
-  }
-
   .navbar {
     background-color: var(--card-background);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -126,6 +77,56 @@
 
   .social-links a:hover {
     color: var(--primary-color);
+  }
+
+  /* Стили для страницы About */
+  .about-section {
+    padding: 4rem 0;
+  }
+  .about-card {
+    background: var(--card-background);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  .about-title {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+  .about-text {
+    color: var(--secondary-text);
+    line-height: 1.8;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .feature-card {
+    background: var(--card-background);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  .feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+  .feature-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .feature-text {
+    color: var(--secondary-text);
+    font-size: 0.9rem;
   }
 </style>
 {% endblock extra_css %} {% block content %}

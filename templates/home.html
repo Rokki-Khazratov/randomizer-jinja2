@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% block extra_css %}
+{% extends 'base.html' %} {% block title %}Home - Randomizer{% endblock title %}
+{% block extra_css %}
 <style>
   :root {
     --primary-color: #007aff;
@@ -12,38 +13,6 @@
     --input-background: #ffffff;
   }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-      Ubuntu, Cantarell, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.5;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .navbar {
-    background-color: var(--card-background);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .navbar-brand {
-    font-weight: 600;
-    color: var(--primary-color) !important;
-  }
-
-  .nav-link {
-    color: var(--text-color) !important;
-    font-weight: 500;
-  }
-
-  .nav-link:hover {
-    color: var(--primary-color) !important;
-  }
-
   .main-content {
     flex: 1;
     display: flex;
@@ -52,7 +21,8 @@
     padding: 2rem 0;
     overflow: hidden;
     width: 100%;
-    min-height: calc(100vh - 140px); /* Вычитаем высоту header и footer */
+    min-height: calc(100vh - 140px);
+    position: relative;
   }
 
   .container {
@@ -60,6 +30,7 @@
     max-width: 500px;
     padding: 2rem;
     position: relative;
+    margin: 0 auto;
   }
 
   .card {
@@ -67,6 +38,14 @@
     border-radius: 20px;
     padding: 2.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card h1 {
+    color: var(--text-color);
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
   }
 
   .input-group {
@@ -79,7 +58,7 @@
   input[type="number"] {
     width: 100%;
     padding: 12px;
-    border: 1px solid #e5e5ea;
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     font-size: 16px;
     transition: all 0.3s ease;
@@ -89,7 +68,7 @@
   input[type="number"]:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
   }
 
   button {
@@ -106,7 +85,7 @@
   }
 
   button:hover {
-    background: #0066cc;
+    background: rgba(var(--primary-rgb), 0.9);
     transform: translateY(-1px);
   }
 
@@ -123,10 +102,6 @@
     min-height: 80px;
     transition: color 0.5s ease;
     position: relative;
-  }
-
-  .result.animate {
-    animation: numberChange 0.1s linear;
     color: var(--primary-color);
   }
 
@@ -146,16 +121,15 @@
     }
   }
 
-  @keyframes numberChange {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
+  .error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 1rem 0;
+    text-align: center;
+    font-size: 0.9rem;
   }
 
   .particle {
@@ -212,16 +186,6 @@
     overflow: hidden;
   }
 
-  .error-message {
-    color: #dc3545;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 4px;
-    padding: 10px;
-    margin: 10px 0;
-    text-align: center;
-  }
-
   .footer {
     background-color: var(--card-background);
     padding: 2rem 0;
@@ -254,198 +218,151 @@
   .social-links a:hover {
     color: var(--primary-color);
   }
+
+  /* Стили для рекламных блоков */
+  .ad-container {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 300px;
+    z-index: 10;
+  }
+
+  .ad-left {
+    left: 20px;
+  }
+
+  .ad-right {
+    right: 20px;
+  }
+
+  .ad-block {
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .ad-placeholder {
+    background: #f0f0f0;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .ad-placeholder-icon {
+    font-size: 2rem;
+    color: #999;
+    margin-bottom: 0.5rem;
+  }
+
+  .ad-placeholder-text {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  /* Медиа-запрос для скрытия боковой рекламы на маленьких экранах */
+  @media (max-width: 1400px) {
+    .ad-container {
+      display: none;
+    }
+  }
+
+  /* Стили для рекламного баннера внизу на маленьких экранах */
+  .ad-banner-mobile {
+    display: none;
+    margin: 2rem auto;
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  @media (max-width: 1400px) {
+    .ad-banner-mobile {
+      display: block;
+    }
+  }
 </style>
-{% endblock extra_css %} {% block content %}
+{% endblock extra_css %} {% block content %} {% if not user.is_authenticated %}
+<!-- Левый рекламный блок -->
+<div class="ad-container ad-left">
+  <div class="ad-block">
+    <div class="ad-placeholder">
+      <i class="fas fa-ad ad-placeholder-icon"></i>
+      <div class="ad-placeholder-text">Advertisement Space</div>
+    </div>
+  </div>
+  <div class="ad-block">
+    <div class="ad-placeholder">
+      <i class="fas fa-ad ad-placeholder-icon"></i>
+      <div class="ad-placeholder-text">Advertisement Space</div>
+    </div>
+  </div>
+</div>
+
+<!-- Правый рекламный блок -->
+<div class="ad-container ad-right">
+  <div class="ad-block">
+    <div class="ad-placeholder">
+      <i class="fas fa-ad ad-placeholder-icon"></i>
+      <div class="ad-placeholder-text">Advertisement Space</div>
+    </div>
+  </div>
+  <div class="ad-block">
+    <div class="ad-placeholder">
+      <i class="fas fa-ad ad-placeholder-icon"></i>
+      <div class="ad-placeholder-text">Advertisement Space</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <div class="container">
   <div class="card">
     <h1>Random Number Generator</h1>
-
-    <form id="randomForm" method="post">
+    <form method="post">
       {% csrf_token %}
       <div class="input-group">
         <input
           type="number"
           name="min_number"
-          id="min_number"
-          placeholder="Min number"
           value="{{ min_num }}"
+          placeholder="Min"
           required
         />
         <input
           type="number"
           name="max_number"
-          id="max_number"
-          placeholder="Max number"
           value="{{ max_num }}"
+          placeholder="Max"
           required
         />
       </div>
-      {% if error_message %}
-      <div class="error-message">{{ error_message }}</div>
-      {% endif %}
-      <button type="submit" id="generateBtn">Generate Random Number</button>
+      <button type="submit">Generate Random Number</button>
     </form>
 
-    <div id="resultContainer" class="result">
-      {% if result is not None %}{{ result }}{% endif %}
+    {% if error_message %}
+    <div class="error-message">{{ error_message }}</div>
+    {% endif %} {% if result %}
+    <div class="result success">{{ result }}</div>
+    {% endif %}
+  </div>
+</div>
+
+{% if not user.is_authenticated %}
+<!-- Мобильный рекламный баннер -->
+<div class="ad-banner-mobile">
+  <div class="ad-block">
+    <div class="ad-placeholder">
+      <i class="fas fa-ad ad-placeholder-icon"></i>
+      <div class="ad-placeholder-text">Advertisement Space</div>
     </div>
   </div>
-  <div class="success-animation"></div>
 </div>
-{% endblock content %} {% block extra_js %}
-<script>
-  document
-    .getElementById("randomForm")
-    .addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const minInput = document.getElementById("min_number");
-      const maxInput = document.getElementById("max_number");
-      const min = parseInt(minInput.value);
-      const max = parseInt(maxInput.value);
-
-      // Валидация на фронтенде
-      if (min > max) {
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "error-message";
-        errorDiv.textContent =
-          "Минимальное число не может быть больше максимального";
-
-        // Удаляем предыдущее сообщение об ошибке, если оно есть
-        const oldError = document.querySelector(".error-message");
-        if (oldError) {
-          oldError.remove();
-        }
-
-        // Вставляем сообщение об ошибке после input-group
-        const inputGroup = document.querySelector(".input-group");
-        inputGroup.insertAdjacentElement("afterend", errorDiv);
-
-        return;
-      }
-
-      const form = this;
-      const resultContainer = document.getElementById("resultContainer");
-      const generateBtn = document.getElementById("generateBtn");
-
-      // Disable button during animation
-      generateBtn.disabled = true;
-
-      // Start animation
-      resultContainer.classList.remove("success");
-      let animationCount = 0;
-
-      const animateNumbers = () => {
-        resultContainer.textContent =
-          Math.floor(Math.random() * (max - min + 1)) + min;
-        resultContainer.classList.add("animate");
-
-        setTimeout(() => {
-          resultContainer.classList.remove("animate");
-          animationCount++;
-
-          if (animationCount < 10) {
-            // Show 10 different numbers
-            setTimeout(animateNumbers, 100);
-          } else {
-            // Get final result from server
-            const formData = new FormData(form);
-            fetch(window.location.href, {
-              method: "POST",
-              body: formData,
-              headers: {
-                "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
-              },
-            })
-              .then((response) => response.text())
-              .then((html) => {
-                // Extract result from response
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, "text/html");
-                const result = doc
-                  .querySelector("#resultContainer")
-                  .textContent.trim();
-
-                // Show final result with success animation
-                resultContainer.textContent = result;
-                resultContainer.classList.add("success");
-                createCelebrationEffect();
-
-                // Reset button
-                generateBtn.disabled = false;
-              });
-          }
-        }, 100);
-      };
-
-      animateNumbers();
-    });
-
-  function createCelebrationEffect() {
-    const container = document.querySelector(".success-animation");
-    container.innerHTML = "";
-
-    const colors = [
-      "#FFD700", // Gold
-      "#FF1493", // Deep Pink
-      "#00FF00", // Lime
-      "#FF4500", // Orange Red
-      "#1E90FF", // Dodger Blue
-      "#FF00FF", // Magenta
-      "#00FFFF", // Cyan
-      "#FF69B4", // Hot Pink
-      "#7FFF00", // Chartreuse
-      "#FF8C00", // Dark Orange
-    ];
-
-    // Create multiple bursts
-    for (let burst = 0; burst < 3; burst++) {
-      setTimeout(() => {
-        // Create particles for each burst
-        for (let i = 0; i < 40; i++) {
-          setTimeout(() => {
-            const particle = document.createElement("div");
-            particle.className = "particle";
-
-            // Random size between 8 and 16 pixels
-            const size = Math.random() * 8 + 8;
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-
-            // Random distance and angle
-            const angle = Math.random() * 360 * (Math.PI / 180);
-            const distance = 100 + Math.random() * 150;
-            const tx = Math.cos(angle) * distance;
-            const ty = Math.sin(angle) * distance;
-
-            particle.style.setProperty("--tx", `${tx}px`);
-            particle.style.setProperty("--ty", `${ty}px`);
-            particle.style.setProperty("--scale", Math.random() * 0.5 + 0.5);
-
-            // Random color and glow effect
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.backgroundColor = color;
-            particle.style.boxShadow = `0 0 ${size}px ${color}`;
-            particle.style.animation = `particle 1.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards, glow 0.5s ease-in-out infinite`;
-
-            // Add trail effect
-            const trail = document.createElement("div");
-            trail.className = "particle-trail";
-            trail.style.color = color;
-            particle.appendChild(trail);
-
-            // Position at center
-            particle.style.left = "50%";
-            particle.style.top = "50%";
-
-            container.appendChild(particle);
-
-            // Remove particle after animation
-            setTimeout(() => particle.remove(), 1500);
-          }, i * 20);
-        }
-      }, burst * 300); // Delay between bursts
-    }
-  }
-</script>
-{% endblock extra_js %}
+{% endif %} {% endblock content %}

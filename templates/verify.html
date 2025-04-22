@@ -1,0 +1,149 @@
+{% extends 'base.html' %} {% block title %}Verify Email - Randomizer{% endblock
+title %} {% block extra_css %}
+<style>
+  .verify-form {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--card-background);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .verify-form h2 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+  }
+
+  .verify-form p {
+    color: var(--secondary-text);
+    margin-bottom: 2rem;
+  }
+
+  .code-input {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .code-input input {
+    width: 3rem;
+    height: 3.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--input-background);
+    transition: all 0.2s;
+  }
+
+  .code-input input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+  }
+
+  .btn-verify {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .btn-verify:hover {
+    background-color: rgba(var(--primary-rgb), 0.9);
+  }
+
+  .error-message {
+    color: #dc3545;
+    margin-top: 1rem;
+  }
+</style>
+{% endblock extra_css %} {% block content %}
+<div class="container">
+  <div class="verify-form">
+    <h2>Verify Your Email</h2>
+    <p>Please enter the 6-digit code to complete registration</p>
+
+    <form method="post" action="{% url 'randomizer:verify' %}">
+      {% csrf_token %}
+      <div class="code-input">
+        <input
+          type="text"
+          maxlength="1"
+          pattern="[0-9]"
+          inputmode="numeric"
+          required
+        />
+        <input
+          type="text"
+          maxlength="1"
+          pattern="[0-9]"
+          inputmode="numeric"
+          required
+        />
+        <input
+          type="text"
+          maxlength="1"
+          pattern="[0-9]"
+          inputmode="numeric"
+          required
+        />
+        <input
+          type="text"
+          maxlength="1"
+          pattern="[0-9]"
+          inputmode="numeric"
+          required
+        />
+        <input
+          type="text"
+          maxlength="1"
+          pattern="[0-9]"
+          inputmode="numeric"
+          required
+        />
+        <input
+          type="text"
+          maxlength="1"
+          pattern="[0-9]"
+          inputmode="numeric"
+          required
+        />
+      </div>
+      <button type="submit" class="btn-verify">Verify</button>
+    </form>
+
+    {% if error %}
+    <div class="error-message">{{ error }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const inputs = document.querySelectorAll(".code-input input");
+
+    inputs.forEach((input, index) => {
+      input.addEventListener("keyup", (e) => {
+        if (e.key >= 0 && e.key <= 9) {
+          if (index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+        } else if (e.key === "Backspace") {
+          if (index > 0) {
+            inputs[index - 1].focus();
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock content %}
