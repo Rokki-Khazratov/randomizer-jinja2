@@ -1,16 +1,19 @@
 {% extends 'base.html' %} {% block title %}Home - Randomizer{% endblock title %}
-{% block extra_css %}
+{% block extra_head %}{% endblock extra_head %} {% block extra_css %}
 <style>
   :root {
     --primary-color: #007aff;
     --primary-rgb: 0, 122, 255;
     --success-color: #34c759;
+    --success-rgb: 52, 199, 89;
     --background-color: #f5f5f7;
     --card-background: #ffffff;
     --text-color: #1d1d1f;
     --secondary-text: #86868b;
     --border-color: #e5e5ea;
     --input-background: #ffffff;
+    --animation-speed: 0.5s;
+    --shuffle-duration: 2s;
   }
 
   .main-content {
@@ -25,7 +28,7 @@
     position: relative;
   }
 
-  .container {
+  .container-main {
     width: 100%;
     max-width: 500px;
     padding: 2rem;
@@ -63,6 +66,7 @@
     font-size: 16px;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    background: var(--input-background);
   }
 
   input[type="number"]:focus {
@@ -100,14 +104,32 @@
     text-align: center;
     margin: 2rem 0;
     min-height: 80px;
-    transition: color 0.5s ease;
+    transition: color var(--animation-speed) ease;
     position: relative;
     color: var(--primary-color);
   }
 
+  .result.shuffling {
+    animation: numberShuffle var(--shuffle-duration) ease-in-out;
+  }
+
   .result.success {
     color: var(--success-color);
-    animation: successPop 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    animation: successPop var(--animation-speed)
+      cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+
+  @keyframes numberShuffle {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    10% {
+      transform: translateY(-10px);
+    }
+    90% {
+      transform: translateY(-10px);
+    }
   }
 
   @keyframes successPop {
@@ -135,7 +157,6 @@
   .particle {
     position: absolute;
     pointer-events: none;
-    animation: particle 1.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
     opacity: 0;
     transform-origin: center;
   }
@@ -180,8 +201,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     overflow: hidden;
   }
@@ -242,6 +263,10 @@
     padding: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .ad-placeholder {
@@ -289,7 +314,163 @@
     }
   }
 </style>
-{% endblock extra_css %} {% block content %} {% if not user.is_authenticated %}
+{% endblock extra_css %} {% block extra_js %}
+<script>
+  document
+    .getElementById("randomForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const minInput = document.getElementById("min_number");
+      const maxInput = document.getElementById("max_number");
+      const min = parseInt(minInput.value);
+      const max = parseInt(maxInput.value);
+
+      // Валидация на фронтенде
+      if (min > max) {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.textContent =
+          "Минимальное число не может быть больше максимального";
+
+        // Удаляем предыдущее сообщение об ошибке, если оно есть
+        const oldError = document.querySelector(".error-message");
+        if (oldError) {
+          oldError.remove();
+        }
+
+        // Вставляем сообщение об ошибке после input-group
+        const inputGroup = document.querySelector(".input-group");
+        inputGroup.insertAdjacentElement("afterend", errorDiv);
+
+        return;
+      }
+
+      const form = this;
+      const resultContainer = document.getElementById("resultContainer");
+      const generateBtn = document.getElementById("generateBtn");
+
+      // Disable button during animation
+      generateBtn.disabled = true;
+
+      // Start animation
+      resultContainer.classList.remove("success");
+      let animationCount = 0;
+
+      const animateNumbers = () => {
+        resultContainer.textContent =
+          Math.floor(Math.random() * (max - min + 1)) + min;
+        resultContainer.classList.add("animate");
+
+        setTimeout(() => {
+          resultContainer.classList.remove("animate");
+          animationCount++;
+
+          if (animationCount < 10) {
+            // Show 10 different numbers
+            setTimeout(animateNumbers, 100);
+          } else {
+            // Get final result from server
+            const formData = new FormData(form);
+            fetch(window.location.href, {
+              method: "POST",
+              body: formData,
+              headers: {
+                "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+              },
+            })
+              .then((response) => response.text())
+              .then((html) => {
+                // Extract result from response
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const result = doc
+                  .querySelector("#resultContainer")
+                  .textContent.trim();
+
+                // Show final result with success animation
+                resultContainer.textContent = result;
+                resultContainer.classList.add("success");
+                createCelebrationEffect();
+
+                // Reset button
+                generateBtn.disabled = false;
+              });
+          }
+        }, 100);
+      };
+
+      animateNumbers();
+    });
+
+  function createCelebrationEffect() {
+    const container = document.querySelector(".success-animation");
+    container.innerHTML = "";
+
+    const colors = [
+      "#FFD700", // Gold
+      "#FF1493", // Deep Pink
+      "#00FF00", // Lime
+      "#FF4500", // Orange Red
+      "#1E90FF", // Dodger Blue
+      "#FF00FF", // Magenta
+      "#00FFFF", // Cyan
+      "#FF69B4", // Hot Pink
+      "#7FFF00", // Chartreuse
+      "#FF8C00", // Dark Orange
+    ];
+
+    // Create multiple bursts
+    for (let burst = 0; burst < 3; burst++) {
+      setTimeout(() => {
+        // Create particles for each burst
+        for (let i = 0; i < 40; i++) {
+          setTimeout(() => {
+            const particle = document.createElement("div");
+            particle.className = "particle";
+
+            // Random size between 8 and 16 pixels
+            const size = Math.random() * 8 + 8;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+
+            // Random distance and angle
+            const angle = Math.random() * 360 * (Math.PI / 180);
+            const distance = 100 + Math.random() * 150;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+
+            particle.style.setProperty("--tx", `${tx}px`);
+            particle.style.setProperty("--ty", `${ty}px`);
+            particle.style.setProperty("--scale", Math.random() * 0.5 + 0.5);
+
+            // Random color and glow effect
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.backgroundColor = color;
+            particle.style.boxShadow = `0 0 ${size}px ${color}`;
+            particle.style.animation = `particle 1.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards, glow 0.5s ease-in-out infinite`;
+
+            // Add trail effect
+            const trail = document.createElement("div");
+            trail.className = "particle-trail";
+            trail.style.color = color;
+            particle.appendChild(trail);
+
+            // Position at center
+            particle.style.left = "50%";
+            particle.style.top = "50%";
+
+            container.appendChild(particle);
+
+            // Remove particle after animation
+            setTimeout(() => particle.remove(), 1500);
+          }, i * 20);
+        }
+      }, burst * 300); // Delay between bursts
+    }
+  }
+</script>
+{% endblock extra_js %} {% block content %} {% if not user.is_authenticated %}
 <!-- Левый рекламный блок -->
 <div class="ad-container ad-left">
   <div class="ad-block">
@@ -323,36 +504,41 @@
 </div>
 {% endif %}
 
-<div class="container">
+<div class="container-main">
   <div class="card">
     <h1>Random Number Generator</h1>
-    <form method="post">
+
+    <form id="randomForm" method="post">
       {% csrf_token %}
       <div class="input-group">
         <input
           type="number"
           name="min_number"
+          id="min_number"
+          placeholder="Min number"
           value="{{ min_num }}"
-          placeholder="Min"
           required
         />
         <input
           type="number"
           name="max_number"
+          id="max_number"
+          placeholder="Max number"
           value="{{ max_num }}"
-          placeholder="Max"
           required
         />
       </div>
-      <button type="submit">Generate Random Number</button>
+      {% if error_message %}
+      <div class="error-message">{{ error_message }}</div>
+      {% endif %}
+      <button type="submit" id="generateBtn">Generate Random Number</button>
     </form>
 
-    {% if error_message %}
-    <div class="error-message">{{ error_message }}</div>
-    {% endif %} {% if result %}
-    <div class="result success">{{ result }}</div>
-    {% endif %}
+    <div id="resultContainer" class="result">
+      {% if result is not None %}{{ result }}{% endif %}
+    </div>
   </div>
+  <div class="success-animation"></div>
 </div>
 
 {% if not user.is_authenticated %}
