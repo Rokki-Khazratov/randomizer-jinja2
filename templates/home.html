@@ -381,19 +381,52 @@
             })
               .then((response) => response.text())
               .then((html) => {
-                // Extract result from response
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, "text/html");
-                const result = doc
-                  .querySelector("#resultContainer")
-                  .textContent.trim();
-
-                // Show final result with success animation
-                resultContainer.textContent = result;
-                resultContainer.classList.add("success");
-                createCelebrationEffect();
-
+                try {
+                  // Сначала пробуем распарсить как JSON
+                  const data = JSON.parse(html);
+                  if (data.result) {
+                    resultContainer.textContent = data.result;
+                    resultContainer.classList.add("success");
+                    createCelebrationEffect();
+                  }
+                  if (data.error_message) {
+                    const errorDiv = document.createElement("div");
+                    errorDiv.className = "error-message";
+                    errorDiv.textContent = data.error_message;
+                    const oldError = document.querySelector(".error-message");
+                    if (oldError) oldError.remove();
+                    const inputGroup = document.querySelector(".input-group");
+                    inputGroup.insertAdjacentElement("afterend", errorDiv);
+                  }
+                } catch (e) {
+                  // Если не получилось как JSON, обрабатываем как HTML
+                  const parser = new DOMParser();
+                  const doc = parser.parseFromString(html, "text/html");
+                  const result = doc
+                    .querySelector("#resultContainer")
+                    .textContent.trim();
+                  if (result) {
+                    resultContainer.textContent = result;
+                    resultContainer.classList.add("success");
+                    createCelebrationEffect();
+                  }
+                  // Проверяем наличие сообщения об ошибке в HTML
+                  const errorMessage = doc.querySelector(".error-message");
+                  if (errorMessage) {
+                    const oldError = document.querySelector(".error-message");
+                    if (oldError) oldError.remove();
+                    const inputGroup = document.querySelector(".input-group");
+                    inputGroup.insertAdjacentElement(
+                      "afterend",
+                      errorMessage.cloneNode(true)
+                    );
+                  }
+                }
                 // Reset button
+                generateBtn.disabled = false;
+              })
+              .catch((error) => {
+                console.error("Error:", error);
                 generateBtn.disabled = false;
               });
           }
